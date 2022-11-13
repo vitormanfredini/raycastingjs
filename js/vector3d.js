@@ -5,12 +5,8 @@ class Vector3d {
         this.z = z;
     }
 
-    getDistanceFromOtherVector(vector) {
-        return Math.sqrt(Math.pow(vector.x - this.x, 2) + Math.pow(vector.y - this.y, 2) + Math.pow(vector.z - this.z, 2));
-    }
-    
-    getIntersectionPointWithTriangle(orig, vertices, t)
-    { 
+    getIntersectionPointWithTriangle(orig, vertices, returnBoolean = false) {
+
         let kEpsilon = 0.00001;
 
         let v0 = vertices[0];
@@ -27,17 +23,18 @@ class Vector3d {
      
         // check if ray and plane are parallel.
         let NdotRayDirection = N.dotProduct(this); 
-        if (Math.abs(NdotRayDirection) < kEpsilon)  //almost 0 
-            return null;  //they are parallel so they don't intersect ! 
+        if (Math.abs(NdotRayDirection) < kEpsilon) {
+            return null;  
+        }
      
-        // compute d parameter using equation 2
         let d = -N.dotProduct(v0); 
      
-        // compute t (equation 3)
-        t = -(N.dotProduct(orig) + d) / NdotRayDirection; 
+        var t = -(N.dotProduct(orig) + d) / NdotRayDirection; 
      
         // check if the triangle is in behind the ray
-        if (t < 0) return null;  //the triangle is behind 
+        if (t < 0){
+            return null;
+        }
      
         // compute the intersection point using equation 1
         let P = orig.add(this.scale(t));
@@ -45,23 +42,29 @@ class Vector3d {
         // Step 2: inside-outside test
         let C;  //vector perpendicular to triangle's plane 
      
-        // edge 0
+        // check if it's inside or outside edge 0
         let edge0 = v1.subtract(v0); 
         let vp0 = P.subtract(v0); 
         C = edge0.crossProduct(vp0); 
-        if (N.dotProduct(C) < 0) return null;  //P is on the right side 
+        if (N.dotProduct(C) < 0) {
+            return null;
+        }
      
-        // edge 1
+        // check if it's inside or outside edge 1
         let edge1 = v2.subtract(v1); 
         let vp1 = P.subtract(v1); 
         C = edge1.crossProduct(vp1); 
-        if (N.dotProduct(C) < 0)  return null;  //P is on the right side 
+        if (N.dotProduct(C) < 0){
+            return null;
+        }
      
-        // edge 2
+        // check if it's inside or outside edge 2
         let edge2 = v0.subtract(v2); 
         let vp2 = P.subtract(v2); 
         C = edge2.crossProduct(vp2); 
-        if (N.dotProduct(C) < 0) return null;  //P is on the right side; 
+        if (N.dotProduct(C) < 0){
+            return null;
+        }
 
         return P;
     } 
@@ -78,8 +81,12 @@ class Vector3d {
         return this.x * vector3d.x + this.y * vector3d.y + this.z * vector3d.z;
     }
 
-    length() {
+    getDistanceFromOrigin() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+
+    getDistanceFromOtherVector(vector) {
+        return Math.sqrt(Math.pow(vector.x - this.x, 2) + Math.pow(vector.y - this.y, 2) + Math.pow(vector.z - this.z, 2));
     }
 
     subtract(vector) {

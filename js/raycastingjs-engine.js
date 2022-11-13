@@ -35,13 +35,18 @@ class RayCastingJsEngine {
         let timeFactor = this.getTimeFactor(ellapsedMs);
 
         for(let c = 0;c < this.objects.length; c++){
+
+            // animate the objects
             if (c == 0){
                 this.objects[c].rotation.y += 0.01 * timeFactor;
-            }
-            if (c == 1){
+            }else if (c == 1){
                 this.objects[c].rotation.x += 0.02 * timeFactor;
                 this.objects[c].rotation.z += 0.03 * timeFactor;
+            }else{
+                this.objects[c].rotation.z -= 0.02 * timeFactor;
+                this.objects[c].rotation.y += 0.015 * timeFactor;
             }
+
             this.objects[c].update();
         }
 
@@ -102,7 +107,6 @@ class RayCastingJsEngine {
     getIntersectionsWithObjects(origin, vector3d) {
 
         let intersections = [];
-        let distanceOriginToVector = vector3d.getDistanceFromOtherVector(origin);
 
         this.objects.forEach((object, objectIndex) => {
 
@@ -110,8 +114,7 @@ class RayCastingJsEngine {
 
                 let intersectionPoint =  vector3d.getIntersectionPointWithTriangle(
                     origin,
-                    triangle,
-                    distanceOriginToVector
+                    triangle
                 );
                 
                 if(intersectionPoint != null){
