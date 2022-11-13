@@ -6,6 +6,7 @@ class RayCastingJsEngine {
         this.povDistance = this.width / 3;
         this.pixels = new Array(this.width * this.height).fill(null);
         this.objects = [];
+        this.lights = []
         this.lastFrameMs = null;
     }
 
@@ -27,6 +28,10 @@ class RayCastingJsEngine {
 
     addObject(object) {
         this.objects.push(object);
+    }
+
+    addLight(light) {
+        this.lights.push(light);
     }
     
     update() {
@@ -55,6 +60,7 @@ class RayCastingJsEngine {
                 this.pixels[this.coordsToIndex(x,y)] = this.calculatePixel(x,y);
             }
         }
+        
     }
 
     coordsToIndex(x,y) {
@@ -66,26 +72,41 @@ class RayCastingJsEngine {
     }
 
     calculatePixel(x,y) {
+        
         let pointToAim = new Vector3d(
             x - (this.width / 2),
             y - (this.height / 2),
             this.povDistance,
         );
         let origin = new Vector3d(0,0,0);
-        
-        const intersections = this.getIntersectionsWithObjects(origin, pointToAim);
+
+        let intersections = this.getIntersectionsWithObjects(origin, pointToAim.subtract(origin));
         const closestIntersection = this.getClosestIntersection(intersections);
-        
-        if (closestIntersection == null){
+        if (closestIntersection === null){
             return new Pixel(0, 0, 0);
         }
+        const closestIntersectionPoint = closestIntersection.point.scale(1.0);
+
+        let countLightHits = 0;
+        this.lights.forEach(light => {
+            let lightIntersections = this.getIntersectionsWithObjects(light.position, closestIntersectionPoint.subtract(light.position));
+            let lightClosestIntersection = this.getClosestIntersection(lightIntersections);
+            if(lightClosestIntersection !== null){
+                if(lightClosestIntersection.point.isAtSamePlaceAs(closestIntersectionPoint)){
+                    // let distance = lightClosestIntersection.point.getDistanceFromOtherVector(light.position);
+                    countLightHits += 1;
+                }
+            }
+        })
+        
+        let lightFactor = 1.0 + (countLightHits * 0.5);
 
         const color = this.objects[closestIntersection.objectIndex].color;
 
         return new Pixel(
-            color[0] / (closestIntersection.distance / 50),
-            color[1] / (closestIntersection.distance / 50),
-            color[2] / (closestIntersection.distance / 50)
+            (color[0] / (closestIntersection.distance / 50)) * lightFactor,
+            (color[1] / (closestIntersection.distance / 50)) * lightFactor,
+            (color[2] / (closestIntersection.distance / 50)) * lightFactor
         );
         
     }
@@ -112,10 +133,7 @@ class RayCastingJsEngine {
 
             object.triangles.forEach(triangle => {
 
-                let intersectionPoint =  vector3d.getIntersectionPointWithTriangle(
-                    origin,
-                    triangle
-                );
+                let intersectionPoint = vector3d.getIntersectionPointWithTriangle(triangle, origin);
                 
                 if(intersectionPoint != null){
                     intersections.push(new Intersection3d(

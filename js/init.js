@@ -10,17 +10,21 @@ function init() {
     const screenRatio = window.innerHeight / window.innerWidth;
     const raycastingjsEngine = new RayCastingJsEngine(horizontalResolution,screenRatio);
 
-    const redPyramid = Object3dGenerator.generatePyramid(100);
-    redPyramid.position = new Vector3d(80,-40,200);
-    raycastingjsEngine.addObject(redPyramid);
+    const pyramid1 = Object3dGenerator.generatePyramid(100);
+    pyramid1.position = new Vector3d(100,-40,200);
+    raycastingjsEngine.addObject(pyramid1);
 
-    const otherPyramid = Object3dGenerator.generatePyramid(100);
-    otherPyramid.position = new Vector3d(-130,-40,250);
-    raycastingjsEngine.addObject(otherPyramid);
+    const pyramid2 = Object3dGenerator.generateCube(150);
+    pyramid2.position = new Vector3d(-400,-40,500);
+    raycastingjsEngine.addObject(pyramid2);
 
     const cube = Object3dGenerator.generateCube(80);
-    cube.position = new Vector3d(-10,-150,250);
+    cube.position = new Vector3d(-40,-150,300);
     raycastingjsEngine.addObject(cube);
+
+    raycastingjsEngine.addLight(new Light3d(
+        new Vector3d(200,0,0)
+    ));
     
     raycastingjs = new RayCastingJs(
         document.getElementById('renderhere').getContext('2d'),

@@ -38,9 +38,9 @@ class Object3dGenerator {
         const position = new Vector3d(0,0,0);
         const rotation = new Vector3d(0,0,0);
         const color = [
-            Math.random() * 255,
-            Math.random() * 255,
-            Math.random() * 255
+            Math.sqrt(Math.random()) * 255,
+            Math.sqrt(Math.random()) * 255,
+            Math.sqrt(Math.random()) * 255
         ];
 
         return new Object3d(
@@ -121,9 +121,9 @@ class Object3dGenerator {
         const position = new Vector3d(0,0,0);
         const rotation = new Vector3d(0,0,0);
         const color = [
-            Math.random() * 255,
-            Math.random() * 255,
-            Math.random() * 255
+            Math.sqrt(Math.random()) * 255,
+            Math.sqrt(Math.random()) * 255,
+            Math.sqrt(Math.random()) * 255
         ];
 
         return new Object3d(

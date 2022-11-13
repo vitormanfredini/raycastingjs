@@ -1,11 +1,12 @@
 class Vector3d {
+    
     constructor(x, y, z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    getIntersectionPointWithTriangle(orig, vertices, returnBoolean = false) {
+    getIntersectionPointWithTriangle(vertices, orig) {
 
         let kEpsilon = 0.00001;
 
@@ -67,7 +68,7 @@ class Vector3d {
         }
 
         return P;
-    } 
+    }
 
     crossProduct(vector) {
         return new Vector3d(
@@ -99,5 +100,14 @@ class Vector3d {
 
     scale(scalar) {
         return new Vector3d(this.x * scalar, this.y * scalar, this.z * scalar);
+    }
+
+    isAtSamePlaceAs(vector){
+        const epsilon = 0.0001;
+        const distance = this.getDistanceFromOtherVector(vector);
+        if (distance < epsilon) {
+            return true;
+        }
+        return false;
     }
 }
