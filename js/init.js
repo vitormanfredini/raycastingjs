@@ -6,7 +6,7 @@ window.addEventListener("load", function(event) {
 
 function init() {
     
-    const horizontalResolution = 120;
+    const horizontalResolution = window.innerWidth;
     const screenRatio = window.innerHeight / window.innerWidth;
     const raycastingjsEngine = new RayCastingJsEngine(horizontalResolution,screenRatio);
 
