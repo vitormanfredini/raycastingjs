@@ -17,6 +17,10 @@ class RayCastingJs {
         for (let y = 0; y < this.engine.height; y++) {
             for (let x = 0; x < this.engine.width; x++) {
                 let pixel = this.engine.getPixel(x,y);
+                let pixelLastFrame = this.engine.getPixelLastFrame(x,y);
+                if(pixel.isEqual(pixelLastFrame)){
+                    continue;
+                }
                 this.drawVirtualPixel(
                     Math.floor(x*virtualPixelWidth),
                     Math.floor(y*virtualPixelWidth),

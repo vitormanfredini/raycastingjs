@@ -5,6 +5,7 @@ class RayCastingJsEngine {
         this.height = Math.ceil(this.width * screenRatio);
         this.povDistance = this.width / 3;
         this.pixels = new Array(this.width * this.height).fill(null);
+        this.pixelsLastFrame = new Array(this.width * this.height).fill(null);
         this.objects = [];
         this.lights = []
         this.lastFrameMs = null;
@@ -36,6 +37,8 @@ class RayCastingJsEngine {
     
     update() {
 
+        this.savePixels();
+
         let ellapsedMs = this.getEllapsedMsSinceLastFrame();
         let timeFactor = this.getTimeFactor(ellapsedMs);
 
@@ -63,12 +66,25 @@ class RayCastingJsEngine {
         
     }
 
+    savePixels() {
+        if(this.pixels[0] === null) {
+            return;
+        }
+        for(let c=0;c<this.pixels.length;c++){
+            this.pixelsLastFrame[c] = this.pixels[c].copy();
+        }
+    }
+
     coordsToIndex(x,y) {
         return (y * this.width) + x;
     }
 
     getPixel(x, y) {
         return this.pixels[this.coordsToIndex(x, y)];
+    }
+
+    getPixelLastFrame(x, y) {
+        return this.pixelsLastFrame[this.coordsToIndex(x, y)];
     }
 
     calculatePixel(x,y) {

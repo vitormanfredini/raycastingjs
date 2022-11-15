@@ -75,9 +75,11 @@ function init() {
         raycastingjsEngine
     );
 
+    let frameCount = 0;
     const drawLoop = () => {
         raycastingjs.update();
         raycastingjs.draw();
+        frameCount += 1;
         window.requestAnimationFrame(drawLoop);
     }
     window.requestAnimationFrame(drawLoop);
