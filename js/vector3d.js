@@ -70,6 +70,11 @@ class Vector3d {
         return P;
     }
 
+    getAngleToOtherVector(other) {
+        const dotProduct = this.dotProduct(other);
+        return ((dotProduct / this.getDistanceFromOrigin()) / other.getDistanceFromOrigin()) * 90;
+    }
+
     crossProduct(vector) {
         return new Vector3d(
             this.y * vector.z - this.z * vector.y,
@@ -109,5 +114,16 @@ class Vector3d {
             return true;
         }
         return false;
+    }
+
+    getAngleToTriangle(triangle){
+        const A = triangle[1].subtract(triangle[0])
+        const B = triangle[2].subtract(triangle[0])
+        const normal = new Vector3d(
+            A.y * B.z - A.z * B.y,
+            A.z * B.x - A.x * B.z,
+            A.x * B.y - A.y * B.x
+        )
+        return this.getAngleToOtherVector(normal);
     }
 }

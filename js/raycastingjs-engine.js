@@ -86,20 +86,33 @@ class RayCastingJsEngine {
             return new Pixel(0, 0, 0);
         }
         const closestIntersectionPoint = closestIntersection.point.scale(1.0);
+        const closestIntersectionTriangle = closestIntersection.triangle;
 
-        let countLightHits = 0;
+        let lightIncidences = [];
         this.lights.forEach(light => {
-            let lightIntersections = this.getIntersectionsWithObjects(light.position, closestIntersectionPoint.subtract(light.position));
+            let lightDirection = closestIntersectionPoint.subtract(light.position);
+            let lightIntersections = this.getIntersectionsWithObjects(light.position, lightDirection);
             let lightClosestIntersection = this.getClosestIntersection(lightIntersections);
             if(lightClosestIntersection !== null){
                 if(lightClosestIntersection.point.isAtSamePlaceAs(closestIntersectionPoint)){
-                    // let distance = lightClosestIntersection.point.getDistanceFromOtherVector(light.position);
-                    countLightHits += 1;
+                    let incidenceAngle = lightDirection.getAngleToTriangle(closestIntersectionTriangle);
+                    lightIncidences.push(new LightIncidence(
+                        incidenceAngle,
+                        light.intensity
+                    ));
                 }
             }
         })
         
-        let lightFactor = 1.0 + (countLightHits * 0.5);
+        let lightFactor = 1.0;
+        lightIncidences.forEach(lightIncidence => {
+            let angle = lightIncidence.angle;
+            angle = Math.abs(angle);
+            if(angle > 90){
+                angle = 90 - (angle - 90);
+            }
+            lightFactor += (angle / 90) * lightIncidence.intensity;
+        })
 
         const color = this.objects[closestIntersection.objectIndex].color;
 
@@ -139,7 +152,8 @@ class RayCastingJsEngine {
                     intersections.push(new Intersection3d(
                         intersectionPoint,
                         intersectionPoint.getDistanceFromOtherVector(origin),
-                        objectIndex
+                        objectIndex,
+                        triangle
                     ));
                 }
 
