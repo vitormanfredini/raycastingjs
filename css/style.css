@@ -4,3 +4,18 @@ html, body {
   margin: 0;
   overflow: hidden;
 }
+
+.githublink {
+  display:block;
+  width:5%;
+  position:absolute;
+  bottom:5%;
+  right:5%;
+  filter:invert(100%);
+}
+
+@media only screen and (max-width: 768px) {
+  .githublink {
+    width:15%;
+  }
+}
