@@ -7,4 +7,4 @@ Supports:
 - multiple lights (with configurable intensity).
 
 Here's a [demo](https://vitormanfredini.github.io/raycastingjs/).
-Here's a [slow demo in full resolution](https://vitormanfredini.github.io/raycastingjs/).
+Here's a [slow demo in full resolution](https://vitormanfredini.github.io/raycastingjs/fullres.html).
