@@ -12,13 +12,13 @@ function init() {
     const screenRatio = window.innerHeight / window.innerWidth;
     const raycastingjsEngine = new RayCastingJsEngine(horizontalResolution, screenRatio);
 
-    // const pyramid = Object3dGenerator.generatePyramid(100);
-    // pyramid.position = new Vector3d(100, -40, 200);
-    // raycastingjsEngine.addObject(pyramid);
-
-    const pyramid = Object3dGenerator.generateSphere(80.0, 10, 10);
+    const pyramid = Object3dGenerator.generatePyramid(100);
     pyramid.position = new Vector3d(100, -40, 200);
     raycastingjsEngine.addObject(pyramid);
+
+    // const sphere = Object3dGenerator.generateSphere(100.0, 10, 10);
+    // sphere.position = new Vector3d(100, -40, 200);
+    // raycastingjsEngine.addObject(sphere);
 
     const leftCube = Object3dGenerator.generateCube(150);
     leftCube.position = new Vector3d(-400, -40, 500);
