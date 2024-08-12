@@ -12,7 +12,11 @@ function init() {
     const screenRatio = window.innerHeight / window.innerWidth;
     const raycastingjsEngine = new RayCastingJsEngine(horizontalResolution, screenRatio);
 
-    const pyramid = Object3dGenerator.generatePyramid(100);
+    // const pyramid = Object3dGenerator.generatePyramid(100);
+    // pyramid.position = new Vector3d(100, -40, 200);
+    // raycastingjsEngine.addObject(pyramid);
+
+    const pyramid = Object3dGenerator.generateSphere(80.0, 10, 10);
     pyramid.position = new Vector3d(100, -40, 200);
     raycastingjsEngine.addObject(pyramid);
 
