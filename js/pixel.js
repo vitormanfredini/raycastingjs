@@ -3,10 +3,17 @@ class Pixel{
         this.r = r;
         this.g = g;
         this.b = b;
+        this.indexFirstObjectHit = null;
+        this.indexFirstTriangleHit = null;
+        this.allSamplesHitSameObject = false;
     }
 
     copy(){
-        return new Pixel(this.r,this.g,this.b)
+        let newPixel = new Pixel(this.r,this.g,this.b);
+        newPixel.indexFirstObjectHit = this.indexFirstObjectHit;
+        newPixel.indexFirstTriangleHit = this.indexFirstTriangleHit;
+        newPixel.allSamplesHitSameObject = this.allSamplesHitSameObject;
+        return newPixel;
     }
 
     isEqual(other){

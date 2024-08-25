@@ -4,10 +4,16 @@ class RayCastingJs {
         this.context.canvas.width = window.innerWidth;
         this.context.canvas.height = window.innerHeight;
         this.engine = engine;
+        this.lastFrameMilliseconds = Date.now();
     }
 
     update() {
-        this.engine.update();
+        const timeStartedRendering = Date.now();
+        const deltaTime = timeStartedRendering - this.lastFrameMilliseconds;
+        console.log(deltaTime);
+        const oneFrameInMilliseconds = 1000 / 60;
+        this.engine.update(deltaTime / oneFrameInMilliseconds);
+        this.lastFrameMilliseconds = timeStartedRendering;
     }
 
     draw() {
