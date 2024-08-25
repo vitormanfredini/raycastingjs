@@ -14,6 +14,33 @@
     <a class="githublink" href="https://github.com/vitormanfredini/raycastingjs">
       <img src="https://raw.githubusercontent.com/rdimascio/icons/master/icons/github.svg" title="raycastingjs repo on github" />
     </a>
+
+    <div id="sidemenu">
+      <ul>
+        <li>
+          <label for="multisampling">multisampling</label>
+          <select id="multisampling">
+            <option value="1">1 sample</option>
+            <option value="2">2 samples</option>
+            <option value="4">4 samples</option>
+            <option value="8">8 samples</option>
+          </select>
+        </li>
+        <li>
+          <label for="optimization">optimization</label>
+          <input id="optimization" type="checkbox" />
+        </li>
+        <li>
+          <label for="resolution">resolution</label>
+          <select id="resolution">
+            <option value="120">low</option>
+            <option value="240">medium</option>
+            <option value="480">high</option>
+            <option value="960">ultra</option>
+          </select>
+        </li>
+      </ul>
+    </div>
 	  
     <script src="js/raycastingjs.js"></script>
     <script src="js/raycastingjs-engine.js"></script>
@@ -21,10 +48,13 @@
     <script src="js/vector3d.js"></script>
     <script src="js/light3d.js"></script>
     <script src="js/lightincidence.js"></script>
+    <script src="js/engine-configuration.js"></script>
     <script src="js/object3d.js"></script>
     <script src="js/object3d-generator.js"></script>
     <script src="js/intersection3d.js"></script>
     <script src="js/init.js"></script>
+
+    <script></script>
 
   </body>
 </html>

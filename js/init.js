@@ -4,13 +4,18 @@ window.addEventListener("load", function (event) {
     init();
 });
 
+function getScreenRatio(){
+    return window.innerHeight / window.innerWidth;
+}
+
 function init() {
-    let horizontalResolution = 120;
-    if (typeof fullresolution != "undefined") {
-        horizontalResolution = window.innerWidth;
-    }
-    const screenRatio = window.innerHeight / window.innerWidth;
-    const raycastingjsEngine = new RayCastingJsEngine(horizontalResolution, screenRatio);
+    
+    const raycastingjsEngine = new RayCastingJsEngine(new EngineConfiguration(
+        2,
+        2,
+        1,
+        false
+    ));
 
     const pyramid = Object3dGenerator.generatePyramid(100);
     pyramid.position = new Vector3d(100, -40, 200);
@@ -72,8 +77,21 @@ function init() {
     raycastingjs = new RayCastingJs(document.getElementById("renderhere").getContext("2d"), raycastingjsEngine);
 
     const drawLoop = () => {
+        
+        const newWidth = parseInt(document.getElementById('resolution').value);
+        const newHeight = Math.ceil(newWidth * getScreenRatio());
+
+        raycastingjs.engine.loadConfig(new EngineConfiguration(
+            newWidth,
+            newHeight,
+            parseInt(document.getElementById('multisampling').value),
+            document.getElementById('optimization').checked
+        ))
+
         raycastingjs.update();
+
         raycastingjs.draw();
+
         window.requestAnimationFrame(drawLoop);
     };
     window.requestAnimationFrame(drawLoop);

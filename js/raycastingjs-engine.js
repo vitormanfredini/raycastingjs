@@ -1,14 +1,23 @@
 class RayCastingJsEngine {
-    constructor(horizontalResolution, screenRatio) {
-        this.width = horizontalResolution;
-        this.height = Math.ceil(this.width * screenRatio);
-        this.povDistance = this.width / 3;
-        this.pixels = new Array(this.width * this.height).fill(null);
-        this.pixelsCalculated = new Array(this.width * this.height).fill(false);
-        this.pixelsLastFrame = new Array(this.width * this.height).fill(null);
+    constructor(config) {
+        this.width = 1
+        this.height = 1
+        this.loadConfig(config);
         this.objects = [];
         this.lights = [];
         this.lastFrameMs = null;
+    }
+
+    loadConfig(config){
+        this.width = config.width;
+        this.height = config.height;
+        this.multisampling = config.multisampling;
+        this.optimization = config.optimization;
+        this.povDistance = this.width / 3;
+        
+        this.pixels = new Array(this.width * this.height).fill(null);
+        this.pixelsCalculated = new Array(this.width * this.height).fill(false);
+        this.pixelsLastFrame = new Array(this.width * this.height).fill(null);
     }
 
     getEllapsedMsSinceLastFrame() {
@@ -36,7 +45,8 @@ class RayCastingJsEngine {
         
         this.pixelsCalculated.fill(false);
 
-        const multiSampling = 4;
+        const multisampling = this.multisampling;
+
 
         for (let c = 0; c < this.objects.length; c++) {
             // animate the objects
@@ -56,7 +66,7 @@ class RayCastingJsEngine {
         for (let y = 0; y < this.height; y+=2) {
             for (let x = y % 4 == 0 ? 0 : 1; x < this.width; x+=2) {
                 let index = this.coordsToIndex(x, y);
-                this.pixels[index] = this.calculatePixelWithMultisampling(x,y,multiSampling);
+                this.pixels[index] = this.calculatePixelWithMultisampling(x,y,multisampling);
                 this.pixelsCalculated[index] = true;
             }
         }
@@ -65,7 +75,7 @@ class RayCastingJsEngine {
         // 0: use 2 pixels from left and right
         // 1: use 2 pixels from up and down
         // 2: use 4 pixels from left, top, right and down
-        const interpolationOption = 2;
+        const interpolationOption = 0;
 
         for (let y = 0; y < this.height; y+=1) {
             for (let x = 0; x < this.width; x+=1) {
@@ -75,10 +85,10 @@ class RayCastingJsEngine {
                     continue;
                 }
 
-                this.pixels[index] = this.calculatePixelWithInterpolation(x,y,interpolationOption);
+                this.pixels[index] = this.optimization ? this.calculatePixelWithInterpolation(x,y,interpolationOption) : null;
 
                 if(this.pixels[index] == null){
-                    this.pixels[index] = this.calculatePixelWithMultisampling(x,y,multiSampling);
+                    this.pixels[index] = this.calculatePixelWithMultisampling(x,y,multisampling);
                 }
 
                 this.pixelsCalculated[index] = true;
