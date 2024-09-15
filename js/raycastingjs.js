@@ -46,17 +46,17 @@ class RayCastingJs {
             for (let x = 0; x < this.engine.width; x++) {
                 const pixel = this.engine.getPixel(x, y);
                 const luminance = pixel.calculateLuminance();
-                asciiString += this.luminanceToAsciiChar(luminance);
+                asciiString += this.luminanceToAsciiChar(luminance / 255);
             }
             asciiString += "\n";
         }
         this.asciiElement.innerText = asciiString;
     }
 
-    luminanceToAsciiChar(luminance){
+    luminanceToAsciiChar(normalizedLuminance){
         const asciiChardsDarkerToLighter = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'`. ";
         const numChars = asciiChardsDarkerToLighter.length;
-        let index = numChars * (luminance / 100);
+        let index = numChars * normalizedLuminance;
         if (index > numChars - 1){
             index = numChars - 1;
         }
