@@ -2,10 +2,13 @@ class RayCastingJsEngine {
     constructor(config) {
         this.width = 1
         this.height = 1
-        this.loadConfig(config);
+        this.multisampling = 1;
+        this.optimization = false;
+        this.ascii = false;
         this.objects = [];
         this.lights = [];
-        this.lastFrameMs = null;
+        this.lastFrameMs = Date.now();
+        this.loadConfig(config);
     }
 
     loadConfig(config){
@@ -14,17 +17,13 @@ class RayCastingJsEngine {
         this.multisampling = config.multisampling;
         this.optimization = config.optimization;
         this.povDistance = this.width / 3;
-        
+        this.ascii = config.ascii;
         this.pixels = new Array(this.width * this.height).fill(null);
         this.pixelsCalculated = new Array(this.width * this.height).fill(false);
         this.pixelsLastFrame = new Array(this.width * this.height).fill(null);
     }
 
     getEllapsedMsSinceLastFrame() {
-        if (this.lastFrameMs === null) {
-            this.lastFrameMs = Date.now();
-            return 0;
-        }
         const currentMs = Date.now();
         const ellapsedMs = currentMs - this.lastFrameMs;
         this.lastFrameMs = currentMs;

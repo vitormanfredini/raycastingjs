@@ -4,10 +4,6 @@ window.addEventListener("load", function (event) {
     init();
 });
 
-function getScreenRatio(){
-    return window.innerHeight / window.innerWidth;
-}
-
 function init() {
     
     const raycastingjsEngine = new RayCastingJsEngine(new EngineConfiguration(
@@ -74,18 +70,31 @@ function init() {
     //     4.0
     // ));
 
-    raycastingjs = new RayCastingJs(document.getElementById("renderhere").getContext("2d"), raycastingjsEngine);
+    raycastingjs = new RayCastingJs(
+        document.getElementById("renderhere").getContext("2d"),
+        document.getElementById("renderasciihere"),
+        raycastingjsEngine
+    );
 
     const drawLoop = () => {
+
+        const ascii = document.getElementById('ascii').checked;
+        const optimization = document.getElementById('optimization').checked;
+        const multisampling = parseInt(document.getElementById('multisampling').value);
         
+        const screenRatio = window.innerHeight / window.innerWidth;
         const newWidth = parseInt(document.getElementById('resolution').value);
-        const newHeight = Math.ceil(newWidth * getScreenRatio());
+        const newHeight = Math.ceil(newWidth * screenRatio);
+
+        document.getElementById("renderhere").style.display = ascii ? 'none' : 'block';
+        document.getElementById("renderasciihere").style.display = ascii ? 'block' : 'none';
 
         raycastingjs.engine.loadConfig(new EngineConfiguration(
             newWidth,
             newHeight,
-            parseInt(document.getElementById('multisampling').value),
-            document.getElementById('optimization').checked
+            multisampling,
+            optimization,
+            ascii
         ))
 
         raycastingjs.update();
