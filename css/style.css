@@ -71,11 +71,29 @@ html, body {
 #renderasciihere {
   width:100%;
   height:100%;
-  font-family: monospace;
-  white-space: pre;
   font-size: 21px;
   line-height: 13px;
+  font-family: monospace;
+  white-space: pre;
+  font-smooth: never;
+  -webkit-font-smoothing:none;
+  background-color: #000;
+  color:#fff;
 }
+
+.howManyChars {
+  font-family: monospace;
+  word-break: break-all;
+  position:absolute;
+  top:0;
+  left:0;
+  opacity:0.5;
+  z-index:10;
+  line-height:20px;
+  font-smooth: never;
+  -webkit-font-smoothing:none;
+}
+
 
 @media only screen and (max-width: 768px) {
   .githublink {

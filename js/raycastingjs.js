@@ -54,9 +54,12 @@ class RayCastingJs {
     }
 
     luminanceToAsciiChar(normalizedLuminance){
-        const asciiChardsDarkerToLighter = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'`. ";
+        // let asciiChardsDarkerToLighter = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'`. ";
+        let asciiChardsDarkerToLighter = " `,-_~:;!+ilI?][}{1)(\\/tfjrxnuvczmwqpdbkhao#MW&8%B@$"
+        // asciiChardsDarkerToLighter = asciiChardsDarkerToLighter.split("").reverse().join("");
         const numChars = asciiChardsDarkerToLighter.length;
-        let index = numChars * normalizedLuminance;
+        const luminanceBoost = 1.2
+        let index = numChars * normalizedLuminance * luminanceBoost;
         if (index > numChars - 1){
             index = numChars - 1;
         }

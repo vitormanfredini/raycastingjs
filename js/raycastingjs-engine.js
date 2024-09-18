@@ -9,9 +9,19 @@ class RayCastingJsEngine {
         this.lights = [];
         this.lastFrameMs = Date.now();
         this.loadConfig(config);
+        this.asciiFontSize = 12
+        this.lastWindowWidth = 10
     }
 
     loadConfig(config){
+
+        if(this.width != config.width || this.lastWindowWidth != window.innerWidth){
+            this.asciiFontSize = getFontSizeToFitScreen(config.width)
+            document.getElementById('renderasciihere').style.fontSize = this.asciiFontSize+'px';
+            document.getElementById('renderasciihere').style.lineHeight = (this.asciiFontSize * 0.60) +'px';
+            this.lastWindowWidth = window.innerWidth
+        }
+
         this.width = config.width;
         this.height = config.height;
         this.multisampling = config.multisampling;
@@ -50,13 +60,13 @@ class RayCastingJsEngine {
         for (let c = 0; c < this.objects.length; c++) {
             // animate the objects
             if (c == 0) {
-                this.objects[c].rotation.y += 0.01 * timeFactor;
+                this.objects[c].rotation.y += 0.0023 * timeFactor;
             } else if (c == 1) {
-                this.objects[c].rotation.x += 0.02 * timeFactor;
-                this.objects[c].rotation.z += 0.03 * timeFactor;
+                this.objects[c].rotation.x += 0.0041 * timeFactor;
+                this.objects[c].rotation.z += 0.027 * timeFactor;
             } else {
-                this.objects[c].rotation.z -= 0.02 * timeFactor;
-                this.objects[c].rotation.y += 0.015 * timeFactor;
+                this.objects[c].rotation.z -= 0.0043 * timeFactor;
+                this.objects[c].rotation.y += 0.0028 * timeFactor;
             }
 
             this.objects[c].update();
