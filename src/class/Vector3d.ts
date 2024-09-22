@@ -1,11 +1,15 @@
-class Vector3d {
-    constructor(x, y, z) {
+export class Vector3d {
+    public x: number
+    public y: number
+    public z: number
+
+    constructor(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    getIntersectionPointWithTriangle(vertices, origin) {
+    getIntersectionPointWithTriangle(vertices: Vector3d[], origin: Vector3d) {
         let kEpsilon = 0.00001;
 
         let v0 = vertices[0];
@@ -62,49 +66,49 @@ class Vector3d {
         return intersectionPoint;
     }
 
-    getAngleToOtherVector(other) {
+    getAngleToOtherVector(other: Vector3d) {
         const dotProduct = this.dotProduct(other);
         return (dotProduct / this.getDistanceFromOrigin() / other.getDistanceFromOrigin()) * 90;
     }
 
-    crossProduct(vector) {
-        return new Vector3d(this.y * vector.z - this.z * vector.y, this.z * vector.x - this.x * vector.z, this.x * vector.y - this.y * vector.x);
+    crossProduct(other: Vector3d) {
+        return new Vector3d(this.y * other.z - this.z * other.y, this.z * other.x - this.x * other.z, this.x * other.y - this.y * other.x);
     }
 
-    dotProduct(vector3d) {
-        return this.x * vector3d.x + this.y * vector3d.y + this.z * vector3d.z;
+    dotProduct(other: Vector3d) {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
     getDistanceFromOrigin() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
 
-    getDistanceFromOtherVector(vector) {
-        return Math.sqrt(Math.pow(vector.x - this.x, 2) + Math.pow(vector.y - this.y, 2) + Math.pow(vector.z - this.z, 2));
+    getDistanceFromOtherVector(other: Vector3d) {
+        return Math.sqrt(Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2) + Math.pow(other.z - this.z, 2));
     }
 
-    subtract(vector) {
-        return new Vector3d(this.x - vector.x, this.y - vector.y, this.z - vector.z);
+    subtract(other: Vector3d) {
+        return new Vector3d(this.x - other.x, this.y - other.y, this.z - other.z);
     }
 
-    add(vector) {
-        return new Vector3d(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+    add(other: Vector3d) {
+        return new Vector3d(this.x + other.x, this.y + other.y, this.z + other.z);
     }
 
-    scale(scalar) {
+    scale(scalar: number) {
         return new Vector3d(this.x * scalar, this.y * scalar, this.z * scalar);
     }
 
-    isAtSamePlaceAs(vector) {
+    isAtSamePlaceAs(other: Vector3d) {
         const epsilon = 0.0001;
-        const distance = this.getDistanceFromOtherVector(vector);
+        const distance = this.getDistanceFromOtherVector(other);
         if (distance < epsilon) {
             return true;
         }
         return false;
     }
 
-    getAngleToTriangle(triangle) {
+    getAngleToTriangle(triangle: Vector3d[]) {
         const A = triangle[1].subtract(triangle[0]);
         const B = triangle[2].subtract(triangle[0]);
         const normal = new Vector3d(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x);

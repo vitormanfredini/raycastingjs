@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Raycasting Renderer written in vanilla javascript</title>
+    <title>Raycasting Renderer written in Typescript</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
@@ -45,23 +45,14 @@
           <label for="ascii">ascii</label>
           <input id="ascii" type="checkbox" />
         </li>
+        <li>
+          <label>fps</label>
+          <div id="fps" class="info"></div>
+        </li>
       </ul>
     </div>
 	  
-    <script src="js/raycastingjs.js"></script>
-    <script src="js/raycastingjs-engine.js"></script>
-    <script src="js/pixel.js"></script>
-    <script src="js/vector3d.js"></script>
-    <script src="js/light3d.js"></script>
-    <script src="js/lightincidence.js"></script>
-    <script src="js/engine-configuration.js"></script>
-    <script src="js/object3d.js"></script>
-    <script src="js/object3d-generator.js"></script>
-    <script src="js/intersection3d.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/init.js"></script>
-
-    <script></script>
+    <script src="dist/bundle.js"></script>
 
   </body>
 </html>

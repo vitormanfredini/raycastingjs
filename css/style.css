@@ -94,6 +94,11 @@ html, body {
   -webkit-font-smoothing:none;
 }
 
+.info {
+  color:#fff;
+  text-align: center;
+}
+
 
 @media only screen and (max-width: 768px) {
   .githublink {

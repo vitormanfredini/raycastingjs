@@ -1,4 +1,13 @@
-var raycastingjs;
+import { RayCastingEngine } from './class/RayCastingEngine';
+import { Vector3d } from './class/Vector3d';
+import {
+    generateCube,
+    generatePyramid,
+    generateSphere
+} from './utils'
+import { RayCastingJs } from './class/RayCastingJs';
+
+let raycastingjs: RayCastingJs;
 
 window.addEventListener("load", function (event) {
     init();
@@ -6,14 +15,9 @@ window.addEventListener("load", function (event) {
 
 function init() {
     
-    const raycastingjsEngine = new RayCastingJsEngine(new EngineConfiguration(
-        2,
-        2,
-        1,
-        false
-    ));
+    const raycastingjsEngine = new RayCastingEngine();
 
-    const pyramid = Object3dGenerator.generatePyramid(100);
+    const pyramid = generatePyramid(100);
     pyramid.position = new Vector3d(100, -40, 200);
     raycastingjsEngine.addObject(pyramid);
 
@@ -21,20 +25,23 @@ function init() {
     // sphere.position = new Vector3d(100, -40, 200);
     // raycastingjsEngine.addObject(sphere);
 
-    const leftCube = Object3dGenerator.generateCube(150);
+    const leftCube = generateCube(150);
     leftCube.position = new Vector3d(-400, -40, 500);
     raycastingjsEngine.addObject(leftCube);
 
-    const middleCube = Object3dGenerator.generateCube(80);
+    const middleCube = generateCube(80);
     middleCube.position = new Vector3d(-40, -150, 300);
     raycastingjsEngine.addObject(middleCube);
 
-    const bottomPyramid = Object3dGenerator.generatePyramid(120);
+    const bottomPyramid = generatePyramid(120);
     bottomPyramid.position = new Vector3d(0, 200, 400);
     raycastingjsEngine.addObject(bottomPyramid);
 
     // strong light coming from the right side
-    raycastingjsEngine.addLight(new Light3d(new Vector3d(205, 0, 0), 2.0));
+    raycastingjsEngine.addLight({
+        position: new Vector3d(205, 0, 0),
+        intensity: 2.0
+    });
 
     // cluster of dim lights to form smooth shadow
     // raycastingjsEngine.addLight(new Light3d(
@@ -71,35 +78,37 @@ function init() {
     // ));
 
     raycastingjs = new RayCastingJs(
-        document.getElementById("renderhere").getContext("2d"),
-        document.getElementById("renderasciihere"),
+        (document.getElementById("renderhere") as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D,
+        document.getElementById("renderasciihere") as HTMLDivElement,
         raycastingjsEngine
     );
 
     const drawLoop = () => {
 
-        const ascii = document.getElementById('ascii').checked;
-        const optimization = document.getElementById('optimization').checked;
-        const multisampling = parseInt(document.getElementById('multisampling').value);
+        const ascii = (document.getElementById('ascii') as HTMLInputElement).checked;
+        const optimization = (document.getElementById('optimization') as HTMLInputElement).checked;
+        const multisampling = parseInt((document.getElementById('multisampling') as HTMLSelectElement).value);
         
         const screenRatio = window.innerHeight / window.innerWidth;
-        const newWidth = parseInt(document.getElementById('resolution').value);
+        const newWidth = parseInt((document.getElementById('resolution') as HTMLSelectElement).value);
         const newHeight = Math.ceil(newWidth * screenRatio);
 
-        document.getElementById("renderhere").style.display = ascii ? 'none' : 'block';
-        document.getElementById("renderasciihere").style.display = ascii ? 'block' : 'none';
+        (document.getElementById("renderhere") as HTMLDivElement).style.display = ascii ? 'none' : 'block';
+        (document.getElementById("renderasciihere") as HTMLDivElement).style.display = ascii ? 'block' : 'none';
 
-        raycastingjs.engine.loadConfig(new EngineConfiguration(
-            newWidth,
-            newHeight,
-            multisampling,
-            optimization,
-            ascii
-        ))
+        raycastingjs.engine.loadConfig({
+            width: newWidth,
+            height: newHeight,
+            multisampling: multisampling,
+            optimization: optimization,
+            ascii: ascii
+        });
 
         raycastingjs.update();
 
         raycastingjs.draw();
+
+        (document.getElementById("fps") as HTMLDivElement).innerText = raycastingjs.getFps().toString();
 
         window.requestAnimationFrame(drawLoop);
     };

@@ -1,10 +1,18 @@
-class Pixel{
-    constructor(r, g, b) {
+export class Pixel {
+
+    public r: number
+    public g: number
+    public b: number
+    public indexFirstObjectHit: number
+    public indexFirstTriangleHit: number
+    public allSamplesHitSameObject: boolean
+
+    constructor(r: number, g: number, b: number) {
         this.r = r;
         this.g = g;
         this.b = b;
-        this.indexFirstObjectHit = null;
-        this.indexFirstTriangleHit = null;
+        this.indexFirstObjectHit = -1;
+        this.indexFirstTriangleHit = -1;
         this.allSamplesHitSameObject = false;
     }
 
@@ -16,8 +24,8 @@ class Pixel{
         return newPixel;
     }
 
-    isEqual(other){
-        if(other == null){
+    isEqual(other: Pixel | null){
+        if(other === null){
             return false;
         }
         if(this.r != other.r){
