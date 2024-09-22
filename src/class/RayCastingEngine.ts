@@ -22,6 +22,7 @@ export type Intersection3d = {
 export type Light3d = {
     position: Vector3d
     intensity: number
+    enabled: boolean
 }
 
 export type LightIncidence = {
@@ -71,6 +72,13 @@ export class RayCastingEngine {
 
     addLight(light: Light3d) {
         this.lights.push(light);
+    }
+
+    enableLight(index: number, enable: boolean) {
+        if(index >= this.lights.length){
+            return;
+        }
+        this.lights[index].enabled = enable;
     }
 
     update(config: RayCastingJsConfig,  timeFactor: number) {
@@ -216,18 +224,18 @@ export class RayCastingEngine {
         }
 
         let multisamplingOffsets: { x: number, y: number }[] = [
-            { x:-0.5, y:-0.5 },
-            { x: 0.5, y:0.5 },
+            { x:-0.25, y:-0.25 },
+            { x: 0.25, y:0.25 },
         ];
 
         if(samples >= 4){
-            multisamplingOffsets.push({ x:-0.5, y:0.5 });
-            multisamplingOffsets.push({ x:0.5, y:-0.5 });
+            multisamplingOffsets.push({ x:-0.25, y:0.25 });
+            multisamplingOffsets.push({ x:0.25, y:-0.25 });
         }
 
         if(samples >= 8){
-            multisamplingOffsets.push({ x:-1.0, y:1.0 });
-            multisamplingOffsets.push({ x:1.0, y:-1.0 });
+            multisamplingOffsets.push({ x:-0.5, y:0.5 });
+            multisamplingOffsets.push({ x:0.5, y:-0.5 });
         }
 
         const newPixel = new Pixel(0, 0, 0);
@@ -267,6 +275,9 @@ export class RayCastingEngine {
 
         let lightIncidences: LightIncidence[] = [];
         this.lights.forEach((light) => {
+            if(!light.enabled){
+                return;
+            }
             let lightDirection = closestIntersectionPoint.subtract(light.position);
             let lightIntersections = this.getIntersectionsWithObjects(light.position, lightDirection);
             let lightClosestIntersection = this.getClosestIntersection(lightIntersections);

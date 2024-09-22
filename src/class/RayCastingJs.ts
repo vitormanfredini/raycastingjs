@@ -1,4 +1,3 @@
-import { Pixel } from "./Pixel";
 import { RayCastingEngine } from "./RayCastingEngine";
 import { IRenderer } from "./Renderers/IRenderer"
 
@@ -8,6 +7,10 @@ export type RayCastingJsConfig = {
     multisampling: number;
     optimization: boolean;
     renderer: string;
+    lightLeft: boolean;
+    lightTop: boolean;
+    lightRight: boolean;
+    lightBottom: boolean;
 }
 
 export class RayCastingJs {
@@ -25,7 +28,11 @@ export class RayCastingJs {
         width: 1,
         multisampling: 1,
         optimization: false,
-        renderer: ''
+        renderer: '',
+        lightLeft: false,
+        lightTop: false,
+        lightRight: false,
+        lightBottom: false
     };
 
     constructor(engine: RayCastingEngine, initialConfig: RayCastingJsConfig) {
@@ -46,6 +53,11 @@ export class RayCastingJs {
                 }
             }
         }
+
+        this.engine.enableLight(0, config.lightRight);
+        this.engine.enableLight(1, config.lightTop);
+        this.engine.enableLight(2, config.lightLeft);
+        this.engine.enableLight(3, config.lightBottom);
 
         this.config = config;
         this.engine.setSizes(this.config.width,this.config.height);

@@ -19,17 +19,23 @@
     <div id="sidemenu">
       <ul>
         <li>
-          <label for="multisampling">multisampling</label>
-          <select id="multisampling">
-            <option value="1">1 sample</option>
-            <option value="2">2 samples</option>
-            <option value="4">4 samples</option>
-            <option value="8">8 samples</option>
-          </select>
-        </li>
-        <li>
-          <label for="optimization">optimization</label>
-          <input id="optimization" type="checkbox" />
+          <label>lights</label>
+          <div class="sideways">
+            <input id="lightLeft" type="checkbox" />
+            <label for="lightLeft">left</label>
+          </div>
+          <div class="sideways">
+            <input id="lightTop" type="checkbox" />
+            <label for="lightTop">top</label>
+          </div>
+          <div class="sideways">
+            <input id="lightRight" type="checkbox" checked />
+            <label for="lightRight">right</label>
+          </div>
+          <div class="sideways">
+            <input id="lightBottom" type="checkbox" />
+            <label for="lightBottom">bottom</label>
+          </div>
         </li>
         <li>
           <label for="resolution">resolution</label>
@@ -42,12 +48,32 @@
           </select>
         </li>
         <li>
-          <label for="ascii">ascii</label>
-          <input id="ascii" type="checkbox" />
+          <label for="multisampling">multisampling</label>
+          <select id="multisampling">
+            <option value="1">1 sample (no multisampling)</option>
+            <option value="2">2 samples</option>
+            <option value="4">4 samples</option>
+            <option value="8">8 samples</option>
+          </select>
         </li>
         <li>
-          <label>fps</label>
-          <div id="fps" class="info"></div>
+          <div class="sideways">
+            <input id="optimization" type="checkbox" />
+            <label for="optimization">optimization</label>
+          </div>
+        </li>
+        <li>
+          <div class="sideways">
+            <input id="ascii" type="checkbox" />
+            <label for="ascii">ascii</label>
+          </div>
+        </li>
+        <li>
+          <div class="sideways">
+            <div id="fps" class="info"></div>
+            <label>fps</label>
+          </div>
+          
         </li>
       </ul>
     </div>

@@ -57,45 +57,29 @@ function init() {
     bottomPyramid.position = new Vector3d(0, 200, 400);
     raycastingjsEngine.addObject(bottomPyramid);
 
-    // strong light coming from the right side
     raycastingjsEngine.addLight({
         position: new Vector3d(205, 0, 0),
-        intensity: 2.0
+        intensity: 2.0,
+        enabled: true
     });
 
-    // cluster of dim lights to form smooth shadow
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(205,0,0),
-    //     intensity: 0.5
-    // });
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(200,3,0),
-    //     intensity: 0.5
-    // });
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(200,0,3),
-    //     intensity: 0.5
-    // });
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(200,0,-3),
-    //     intensity: 0.5
-    // });
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(200,-3,-3),
-    //     intensity: 0.5
-    // });
+    raycastingjsEngine.addLight({
+        position: new Vector3d(0,-200,0),
+        intensity: 2.0,
+        enabled: false
+    });
 
-    // intense light from the the top
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(0,-200,0),
-    //     intensity: 2.0
-    // });
+    raycastingjsEngine.addLight({
+        position: new Vector3d(-200,0,100),
+        intensity: 3.0,
+        enabled: false
+    });
 
-    // very intense light from the left
-    // raycastingjsEngine.addLight({
-    //     position: new Vector3d(-200,0,100),
-    //     intensity: 4.0
-    // });
+    raycastingjsEngine.addLight({
+        position: new Vector3d(0,200,50),
+        intensity: 4.0,
+        enabled: false
+    });
 
     raycastingjs = new RayCastingJs(
         raycastingjsEngine,

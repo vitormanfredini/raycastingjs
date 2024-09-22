@@ -103,6 +103,11 @@ const getConfig = (): RayCastingJsConfig => {
     const optimization = (document.getElementById('optimization') as HTMLInputElement).checked;
     const multisampling = parseInt((document.getElementById('multisampling') as HTMLSelectElement).value);
     
+    const lightLeft = (document.getElementById('lightLeft') as HTMLInputElement).checked;
+    const lightTop = (document.getElementById('lightTop') as HTMLInputElement).checked;
+    const lightRight = (document.getElementById('lightRight') as HTMLInputElement).checked;
+    const lightBottom = (document.getElementById('lightBottom') as HTMLInputElement).checked;
+    
     const screenRatio = window.innerHeight / window.innerWidth;
     const newWidth = parseInt((document.getElementById('resolution') as HTMLSelectElement).value);
     const newHeight = Math.ceil(newWidth * screenRatio);
@@ -112,7 +117,11 @@ const getConfig = (): RayCastingJsConfig => {
         height: newHeight,
         multisampling: multisampling,
         optimization: optimization,
-        renderer: ascii ? 'ascii' : 'default'
+        renderer: ascii ? 'ascii' : 'default',
+        lightLeft: lightLeft,
+        lightTop: lightTop,
+        lightRight: lightRight,
+        lightBottom: lightBottom,
     };
 }
 
