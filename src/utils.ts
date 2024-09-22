@@ -1,4 +1,5 @@
 import { Color, Object3d } from "./class/Object3d";
+import { RayCastingJsConfig } from "./class/RayCastingJs";
 import { Vector3d } from "./class/Vector3d";
 
 const generatePyramid = (scale: number) => {
@@ -97,38 +98,27 @@ const generateSphere = (radius: number, segments: number, rings: number) => {
     return new Object3d(sphereTriangles, position, rotation, color);
 }
 
-
-const getFontSizeToFitScreen = (numChars: number) => {
-
-    const div = document.createElement('div');
-    div.className = 'howManyChars';
-    div.innerText += 'A';
-    document.body.appendChild(div);
-
-    const oneLineHeight = div.clientHeight;
-
-    for(let c=0;c<numChars-1;c++){
-        div.innerText += 'A';
-    }
-
-    let fontSize = 1;
-    for(let c=0;c<500;c++){
-        div.style.fontSize = fontSize+'px';
-        if(div.clientHeight > oneLineHeight){
-            break
-        }
-        fontSize += 0.25
-    }
-
-    const divRemove = document.querySelector('.howManyChars');
-    if (divRemove) divRemove.remove();
+const getConfig = (): RayCastingJsConfig => {
+    const ascii = (document.getElementById('ascii') as HTMLInputElement).checked;
+    const optimization = (document.getElementById('optimization') as HTMLInputElement).checked;
+    const multisampling = parseInt((document.getElementById('multisampling') as HTMLSelectElement).value);
     
-    return fontSize
+    const screenRatio = window.innerHeight / window.innerWidth;
+    const newWidth = parseInt((document.getElementById('resolution') as HTMLSelectElement).value);
+    const newHeight = Math.ceil(newWidth * screenRatio);
+
+    return {
+        width: newWidth,
+        height: newHeight,
+        multisampling: multisampling,
+        optimization: optimization,
+        renderer: ascii ? 'ascii' : 'default'
+    };
 }
 
 export {
-    getFontSizeToFitScreen,
     generateCube,
     generatePyramid,
-    generateSphere
+    generateSphere,
+    getConfig
 }

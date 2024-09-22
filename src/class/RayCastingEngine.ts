@@ -1,6 +1,6 @@
-import { getFontSizeToFitScreen } from '../utils'
 import { Color, Object3d } from './Object3d'
 import { Pixel } from './Pixel'
+import { RayCastingJsConfig } from './RayCastingJs'
 import { Vector3d } from './Vector3d'
 
 export type EngineConfiguration = {
@@ -30,49 +30,31 @@ export type LightIncidence = {
 }
 
 export class RayCastingEngine {
-    public ascii: boolean = false;
     public width: number = 1
     public height: number = 1
-    private multisampling: number = 1;
-    private optimization: boolean = false;
+    
     private objects: Object3d[] = [];
     private lights: Light3d[] = [];
     private pixels: (Pixel | null)[] = []
     private pixelsLastFrame: (Pixel | null)[] = []
     private lastFrameMs: number
-    private asciiFontSize: number = 1
     private lastWindowWidth: number = 1
     private lastWindowHeight: number = 1
-    private povDistance: number = 1
 
     constructor() {
-        this.povDistance = this.width / 3;
         this.lastFrameMs = Date.now();
     }
 
-    loadConfig(config: EngineConfiguration){
+    setSizes(width: number, height: number){
+        const configSizeChanged = this.width != width || this.height != height;
         
-        const configSizeChanged = this.width != config.width || this.height != config.height;
-        const windowSizeChanged = window.innerWidth != this.lastWindowWidth || window.innerHeight != this.lastWindowHeight;
-
-        if(configSizeChanged || windowSizeChanged){
-            this.width = config.width;
-            this.height = config.height;
-            this.povDistance = this.width / 3;
-            this.asciiFontSize = getFontSizeToFitScreen(this.width)
-            const asciiDiv = document.getElementById('renderasciihere') as HTMLDivElement
-            asciiDiv.style.fontSize = this.asciiFontSize+'px';
-            asciiDiv.style.lineHeight = (this.asciiFontSize * 0.60) +'px';
-            this.lastWindowWidth = window.innerWidth
-            this.lastWindowHeight = window.innerHeight
-            this.pixels = new Array(this.width * this.height).fill(null);
-            this.pixelsLastFrame = new Array(this.width * this.height).fill(null);
+        if(configSizeChanged){
+            this.pixels = new Array(width * height).fill(null);
+            this.pixelsLastFrame = new Array(width * height).fill(null);
         }
 
-        this.multisampling = config.multisampling;
-        this.optimization = config.optimization;
-        this.ascii = config.ascii;
-        
+        this.width = width;
+        this.height = height;
     }
 
     getEllapsedMsSinceLastFrame() {
@@ -91,7 +73,8 @@ export class RayCastingEngine {
         this.lights.push(light);
     }
 
-    update(timeFactor: number) {
+    update(config: RayCastingJsConfig,  timeFactor: number) {
+
         this.savePixelsFromLastFrame();
         this.pixels.fill(null);
 
@@ -113,7 +96,7 @@ export class RayCastingEngine {
         for (let y = 0; y < this.height; y+=2) {
             for (let x = y % 4 == 0 ? 0 : 1; x < this.width; x+=2) {
                 let index = this.coordsToIndex(x, y);
-                this.pixels[index] = this.calculatePixelWithMultisampling(x,y,this.multisampling);
+                this.pixels[index] = this.calculatePixelWithMultisampling(x,y,config.multisampling);
             }
         }
 
@@ -131,12 +114,12 @@ export class RayCastingEngine {
                     continue;
                 }
 
-                if(this.optimization){
+                if(config.optimization){
                     this.pixels[index] = this.calculatePixelWithInterpolation(x, y, interpolationOption);
                 }
 
                 if(this.pixels[index] === null){
-                    this.pixels[index] = this.calculatePixelWithMultisampling(x, y, this.multisampling);
+                    this.pixels[index] = this.calculatePixelWithMultisampling(x, y, config.multisampling);
                 }
 
             }
@@ -158,12 +141,8 @@ export class RayCastingEngine {
         return y * this.width + x;
     }
 
-    getPixel(x: number, y: number) {
-        return this.pixels[this.coordsToIndex(x, y)];
-    }
-
-    getPixelLastFrame(x: number, y: number) {
-        return this.pixelsLastFrame[this.coordsToIndex(x, y)];
+    getPixels(): Pixel[] {
+        return this.pixels as Pixel[];
     }
 
     calculatePixelWithInterpolation(x: number, y: number, interpolationOption: number): Pixel | null {
@@ -274,7 +253,8 @@ export class RayCastingEngine {
     }
 
     _calculatePixel(x: number, y: number): Pixel {
-        let pointToAim = new Vector3d(x - this.width / 2, y - this.height / 2, this.povDistance);
+        const povDistance = this.width * 0.333;
+        let pointToAim = new Vector3d(x - this.width / 2, y - this.height / 2, povDistance);
         let origin = new Vector3d(0, 0, 0);
 
         let intersections = this.getIntersectionsWithObjects(origin, pointToAim.subtract(origin));

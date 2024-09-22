@@ -6,6 +6,10 @@ html, body {
   font-family: sans-serif;
 }
 
+body {
+  background:black;
+}
+
 .githublink {
   display:block;
   width:5%;

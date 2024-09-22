@@ -3,14 +3,34 @@ import { Vector3d } from './class/Vector3d';
 import {
     generateCube,
     generatePyramid,
-    generateSphere
+    generateSphere,
+    getConfig
 } from './utils'
 import { RayCastingJs } from './class/RayCastingJs';
+import { DefaultRenderer } from './class/Renderers/DefaultRenderer';
+import { AsciiRenderer } from './class/Renderers/AsciiRenderer';
 
 let raycastingjs: RayCastingJs;
 
 window.addEventListener("load", function (event) {
     init();
+});
+
+window.onresize = () => {
+    resize();
+}
+
+function resize(){
+    if(raycastingjs){
+        raycastingjs.loadConfig(getConfig());
+        raycastingjs.onResize();
+    }
+}
+
+document.querySelectorAll('#sidemenu input, #sidemenu select').forEach(element => {
+    element.addEventListener('change', function(event) {
+        raycastingjs.loadConfig(getConfig());
+    });
 });
 
 function init() {
@@ -44,71 +64,61 @@ function init() {
     });
 
     // cluster of dim lights to form smooth shadow
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(205,0,0),
-    //     0.5
-    // ));
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(200,3,0),
-    //     0.5
-    // ));
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(200,0,3),
-    //     0.5
-    // ));
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(200,0,-3),
-    //     0.5
-    // ));
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(200,-3,-3),
-    //     0.5
-    // ));
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(205,0,0),
+    //     intensity: 0.5
+    // });
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(200,3,0),
+    //     intensity: 0.5
+    // });
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(200,0,3),
+    //     intensity: 0.5
+    // });
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(200,0,-3),
+    //     intensity: 0.5
+    // });
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(200,-3,-3),
+    //     intensity: 0.5
+    // });
 
     // intense light from the the top
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(0,-200,0),
-    //     2.0
-    // ));
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(0,-200,0),
+    //     intensity: 2.0
+    // });
 
     // very intense light from the left
-    // raycastingjsEngine.addLight(new Light3d(
-    //     new Vector3d(-200,0,100),
-    //     4.0
-    // ));
+    // raycastingjsEngine.addLight({
+    //     position: new Vector3d(-200,0,100),
+    //     intensity: 4.0
+    // });
 
     raycastingjs = new RayCastingJs(
-        (document.getElementById("renderhere") as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D,
-        document.getElementById("renderasciihere") as HTMLDivElement,
-        raycastingjsEngine
+        raycastingjsEngine,
+        getConfig()
     );
 
+    raycastingjs.addRenderer(
+        new DefaultRenderer(document.getElementById("renderhere") as HTMLCanvasElement),
+        'default'
+    )
+
+    raycastingjs.addRenderer(
+        new AsciiRenderer(document.getElementById("renderasciihere") as HTMLDivElement),
+        'ascii'
+    )
+
+    resize();
+
     const drawLoop = () => {
-
-        const ascii = (document.getElementById('ascii') as HTMLInputElement).checked;
-        const optimization = (document.getElementById('optimization') as HTMLInputElement).checked;
-        const multisampling = parseInt((document.getElementById('multisampling') as HTMLSelectElement).value);
-        
-        const screenRatio = window.innerHeight / window.innerWidth;
-        const newWidth = parseInt((document.getElementById('resolution') as HTMLSelectElement).value);
-        const newHeight = Math.ceil(newWidth * screenRatio);
-
-        (document.getElementById("renderhere") as HTMLDivElement).style.display = ascii ? 'none' : 'block';
-        (document.getElementById("renderasciihere") as HTMLDivElement).style.display = ascii ? 'block' : 'none';
-
-        raycastingjs.engine.loadConfig({
-            width: newWidth,
-            height: newHeight,
-            multisampling: multisampling,
-            optimization: optimization,
-            ascii: ascii
-        });
-
         raycastingjs.update();
-
         raycastingjs.draw();
-
-        (document.getElementById("fps") as HTMLDivElement).innerText = raycastingjs.getFps().toString();
+        const fpsCounterElement = document.getElementById("fps") as HTMLDivElement;
+        fpsCounterElement.innerText = raycastingjs.getFps().toString();
 
         window.requestAnimationFrame(drawLoop);
     };
