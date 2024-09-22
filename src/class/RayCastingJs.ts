@@ -80,7 +80,7 @@ export class RayCastingJs {
     }
 
     addDeltaTimeToHistory(deltaTime: number){
-        if(this.deltaTimeHistory.length >= 3){
+        if(this.deltaTimeHistory.length >= 5){
             this.deltaTimeHistory.shift();
         }
         this.deltaTimeHistory.push(deltaTime);
