@@ -216,18 +216,18 @@ export class RayCastingEngine {
         }
 
         let multisamplingOffsets: { x: number, y: number }[] = [
-            { x:-0.25, y:-0.25 },
-            { x: 0.25, y:0.25 },
+            { x:-0.5, y:-0.5 },
+            { x: 0.5, y:0.5 },
         ];
 
         if(samples >= 4){
-            multisamplingOffsets.push({ x:-0.25, y:0.25 });
-            multisamplingOffsets.push({ x:0.25, y:-0.25 });
+            multisamplingOffsets.push({ x:-0.5, y:0.5 });
+            multisamplingOffsets.push({ x:0.5, y:-0.5 });
         }
 
         if(samples >= 8){
-            multisamplingOffsets.push({ x:-0.5, y:0.5 });
-            multisamplingOffsets.push({ x:0.5, y:-0.5 });
+            multisamplingOffsets.push({ x:-1.0, y:1.0 });
+            multisamplingOffsets.push({ x:1.0, y:-1.0 });
         }
 
         const newPixel = new Pixel(0, 0, 0);
