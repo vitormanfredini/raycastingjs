@@ -102,7 +102,8 @@ const getConfig = (): RayCastingJsConfig => {
     const ascii = (document.getElementById('ascii') as HTMLInputElement).checked;
     const optimization = (document.getElementById('optimization') as HTMLInputElement).checked;
     const multisampling = parseInt((document.getElementById('multisampling') as HTMLSelectElement).value);
-    
+    const fieldofview = parseInt((document.getElementById('fieldofview') as HTMLInputElement).value) / 100;
+
     const lightLeft = (document.getElementById('lightLeft') as HTMLInputElement).checked;
     const lightTop = (document.getElementById('lightTop') as HTMLInputElement).checked;
     const lightRight = (document.getElementById('lightRight') as HTMLInputElement).checked;
@@ -122,12 +123,20 @@ const getConfig = (): RayCastingJsConfig => {
         lightTop: lightTop,
         lightRight: lightRight,
         lightBottom: lightBottom,
+        fieldofview: fieldofview
     };
+}
+
+const mapToExponential = (normalizedLinearValue: number, amount: number): number => {
+    const linearPortion = normalizedLinearValue * (1.0 - amount);
+    const exponentialPortion = normalizedLinearValue * normalizedLinearValue * amount;
+    return linearPortion + exponentialPortion;
 }
 
 export {
     generateCube,
     generatePyramid,
     generateSphere,
-    getConfig
+    getConfig,
+    mapToExponential
 }

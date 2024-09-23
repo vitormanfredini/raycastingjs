@@ -1,15 +1,8 @@
+import { mapToExponential } from '../utils'
 import { Color, Object3d } from './Object3d'
 import { Pixel } from './Pixel'
 import { RayCastingJsConfig } from './RayCastingJs'
 import { Vector3d } from './Vector3d'
-
-export type EngineConfiguration = {
-    multisampling: number
-    optimization: boolean
-    width: number
-    height: number
-    ascii: boolean
-}
 
 export type Intersection3d = {
     point: Vector3d
@@ -33,14 +26,12 @@ export type LightIncidence = {
 export class RayCastingEngine {
     public width: number = 1
     public height: number = 1
-    
+
     private objects: Object3d[] = [];
     private lights: Light3d[] = [];
     private pixels: (Pixel | null)[] = []
     private pixelsLastFrame: (Pixel | null)[] = []
     private lastFrameMs: number
-    private lastWindowWidth: number = 1
-    private lastWindowHeight: number = 1
 
     constructor() {
         this.lastFrameMs = Date.now();
@@ -48,7 +39,7 @@ export class RayCastingEngine {
 
     setSizes(width: number, height: number){
         const configSizeChanged = this.width != width || this.height != height;
-        
+
         if(configSizeChanged){
             this.pixels = new Array(width * height).fill(null);
             this.pixelsLastFrame = new Array(width * height).fill(null);
@@ -104,7 +95,7 @@ export class RayCastingEngine {
         for (let y = 0; y < this.height; y+=2) {
             for (let x = y % 4 == 0 ? 0 : 1; x < this.width; x+=2) {
                 let index = this.coordsToIndex(x, y);
-                this.pixels[index] = this.calculatePixelWithMultisampling(x,y,config.multisampling);
+                this.pixels[index] = this.calculatePixelWithMultisampling(x,y, config.multisampling, config.fieldofview);
             }
         }
 
@@ -127,7 +118,7 @@ export class RayCastingEngine {
                 }
 
                 if(this.pixels[index] === null){
-                    this.pixels[index] = this.calculatePixelWithMultisampling(x, y, config.multisampling);
+                    this.pixels[index] = this.calculatePixelWithMultisampling(x, y, config.multisampling, config.fieldofview);
                 }
 
             }
@@ -209,7 +200,7 @@ export class RayCastingEngine {
         return interpolatedPixel;
     }
 
-    calculatePixelWithMultisampling(x: number,y: number,samples: number): Pixel {
+    calculatePixelWithMultisampling(x: number,y: number, samples: number, fieldofview: number): Pixel {
 
         let samplesAllowed = [1,2,4,8];
         if(!samplesAllowed.includes(samples)){
@@ -218,7 +209,7 @@ export class RayCastingEngine {
         }
 
         if(samples == 1){
-            const newPixel = this._calculatePixel(x, y);
+            const newPixel = this._calculatePixel(x, y, fieldofview);
             newPixel.allSamplesHitSameObject = true;
             return newPixel;
         }
@@ -230,19 +221,19 @@ export class RayCastingEngine {
 
         if(samples >= 4){
             multisamplingOffsets.push({ x:-0.25, y:0.25 });
-            multisamplingOffsets.push({ x:0.25, y:-0.25 });
+            multisamplingOffsets.push({ x:0.25,  y:-0.25 });
         }
 
         if(samples >= 8){
             multisamplingOffsets.push({ x:-0.5, y:0.5 });
-            multisamplingOffsets.push({ x:0.5, y:-0.5 });
+            multisamplingOffsets.push({ x:0.5,  y:-0.5 });
         }
 
         const newPixel = new Pixel(0, 0, 0);
         const indexesObjectsHit = [];
         const indexesTrianglesHit = [];
         for (let offset of multisamplingOffsets) {
-            let sampledPixel = this._calculatePixel(x + offset.x, y + offset.y);
+            let sampledPixel = this._calculatePixel(x + offset.x, y + offset.y, fieldofview);
             newPixel.r += sampledPixel.r / multisamplingOffsets.length;
             newPixel.g += sampledPixel.g / multisamplingOffsets.length;
             newPixel.b += sampledPixel.b / multisamplingOffsets.length;
@@ -260,8 +251,11 @@ export class RayCastingEngine {
 
     }
 
-    _calculatePixel(x: number, y: number): Pixel {
-        const povDistance = this.width * 0.333;
+    _calculatePixel(x: number, y: number, fieldofview: number): Pixel {
+        fieldofview = mapToExponential(fieldofview, 1.0)
+        const width15Percent = 0.15 * this.width;
+        const width70Percent = 0.7 * this.width;
+        const povDistance = width15Percent + (width70Percent * fieldofview)
         let pointToAim = new Vector3d(x - this.width / 2, y - this.height / 2, povDistance);
         let origin = new Vector3d(0, 0, 0);
 
@@ -352,3 +346,4 @@ export class RayCastingEngine {
         return intersections;
     }
 }
+

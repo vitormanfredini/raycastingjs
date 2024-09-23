@@ -11,6 +11,7 @@ export type RayCastingJsConfig = {
     lightTop: boolean;
     lightRight: boolean;
     lightBottom: boolean;
+    fieldofview: number;
 }
 
 export class RayCastingJs {
@@ -32,7 +33,8 @@ export class RayCastingJs {
         lightLeft: false,
         lightTop: false,
         lightRight: false,
-        lightBottom: false
+        lightBottom: false,
+        fieldofview: 0.5
     };
 
     constructor(engine: RayCastingEngine, initialConfig: RayCastingJsConfig) {
